@@ -32,6 +32,22 @@ MNIST digits are 28 x 28 pixels and the labels are single digits 0-9
 and `plt.title` to display the label and a possible prediction
 * Try looking at a few random train examples to get a feel for the dataset
 
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+indices = np.random.choice(len(train_X), size=2, replace=False)
+
+for i, idx in enumerate(indices):
+    plt.subplot(1, 2, i + 1)
+    plt.imshow(train_X[idx], cmap='gray')
+    plt.title(f"Image {idx}\nLabel: {train_y[idx]}")
+    plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
 To write a prediction system for digits, we need to figure out what the constraints to our functions is. 
 
 What type of output do we need?
@@ -81,6 +97,19 @@ The exponential function $f(x) = e^x$!
 * Plot the function on an interval $x\in [-10,10]$ to convince yourself
 * Use `torch` methods instead of `numpy`
 
+```python
+x = torch.linspace(-10, 10, steps=100)
+
+y = torch.exp(x)
+
+plt.figure(figsize=(8,4.944))
+plt.plot(x.numpy(), y.numpy())
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.title("Exponential Function in PyTorch")
+plt.show()
+```
+
 ## Step 3 - make things sum to one
 
 Now assum we have N positive numbers $x_i > 0$, how can we make sure they sum to one?
@@ -97,6 +126,31 @@ $$ \theta_i(x) = \mathrm{scale}(\mathrm{exp}(f_i(x)) = \frac{\exp(f_i(x))}{\sum_
 * Write a function that takes in a tensor of shape (N,10) and produces valid `\theta_i`'s 
 * Validate that the numbers sum to 1 using a random tensor `torch.randn(123,10)`
 * Write a `plot_probs(theta)` using `matplotlib`'s `plt.bar` to plot a bar plot of the probabilities
+
+```python
+def compute_theta(x: torch.Tensor) -> torch.Tensor:
+   exp_x = torch.exp(x)
+   sum_exp_x = exp_x.sum(dim=1, keepdim=True)
+   theta_i = exp_x / sum_exp_x
+   return theta_i
+
+check_tensor = torch.randn(123, 10)
+check_result = compute_theta(check_tensor)
+print(check_result)
+print(check_result.sum(dim=1))
+
+def plot_probs(theta, row_index):
+   row = theta[row_index].detach().numpy()
+   x = list(range(theta.size(1)))
+   plt.bar(x, row)
+   plt.title(rf"$\theta_i$ in Row {row_index}")
+   plt.xlabel("i")
+   plt.ylabel(r"$\theta_i$")
+   plt.xticks(x, labels=[str(i) for i in x])
+   plt.show()
+
+plot_probs(check_result, 2)
+```
 
 ## Step 4 - Construct the loss
 
