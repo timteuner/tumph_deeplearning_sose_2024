@@ -35,7 +35,12 @@ def generate_data(N):
 
 Deep Learning works well in higher dimensions. So we'll embed the 10 possible integers into a vector space using `torch.nn.Embedding`
 
-
+```python
+embed = torch.nn.Embedding(10, embed_dim)
+test_vector = generate_data(12)[0]
+test_embedded = embed(torch.tensor(test_vector, dtype=torch.long))
+print("Shape of test_embedded:", test_embedded.shape)
+```
 
 * Verify that using e.g. a module like `torch.nn.Embedding(10,embed_dim)` achieves this
 * Take a random vector of integers of shape (N,M) and evaluate them through an embedding module
