@@ -21,10 +21,20 @@ $$
 
 Write a data-generating function that produces a batch of N examples or length-10 sequences of random integers between 0 and 9 as well as a binary label indicating whether the sequence has more 2s than 4s. The output should return (X,y), where X has shape `(N,10)` and y has shape `(N,1)`
 
+```python
+def generate_data(N):
+    X = np.random.randint(0, 10, size=(N, 10))
+    counts_2 = np.sum(X == 2, axis=1)
+    counts_4 = np.sum(X == 4, axis=1)
+    y = (counts_2 > counts_4).astype(int).reshape(-1, 1)
+    return X, y
+```
+
 
 ## Step 2 - Embedding the Integers
 
 Deep Learning works well in higher dimensions. So we'll embed the 10 possible integers into a vector space using `torch.nn.Embedding`
+
 
 
 * Verify that using e.g. a module like `torch.nn.Embedding(10,embed_dim)` achieves this
